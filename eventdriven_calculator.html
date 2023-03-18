@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Driven Form</title>
+    <style>
+        * {
+            margin:0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+        body {
+            background-color: #e6e6e6;
+        }
+        .maindiv {
+            max-width: 600px;
+            background: white;
+            margin: 40px auto 0;
+            display: flex;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        .maindiv.redbg {
+            background-color: #ffd9d9;
+        }
+        .formdiv {
+            padding: 20px 10px;
+            width: 100%;
+        }
+        .formdiv h1 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .formdiv h1::after {
+            content: '.';
+            position: absolute;
+            bottom: 0;
+            width: 175px;
+            background: rebeccapurple;
+            height: 2px;
+            color: #ffffff00;
+            left: 0;
+        }
+        .formdiv form {
+            padding: 0 10px;
+        }
+        .fielddiv {
+            display: flex;
+            flex-direction: column;
+            margin: 10px auto;
+        }
+        .fielddiv label{
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .fielddiv input{
+            border: 1px solid black;
+            padding: 8px 5px;
+            font-size: 14px;
+            color: #4c4c4c;
+            background: white;
+        }
+        .fielddiv textarea{
+            border: 1px solid black;
+            padding: 8px 5px;
+            font-size: 14px;
+            color: #4c4c4c;
+            background: white;
+        }
+        .calcdiv{
+            padding: 1px 7px;
+            background: #ebebeb;
+        }
+        .calcdiv h4{
+            text-align: center;
+            font-size: 16px;
+            line-height: 30px;
+        }
+        .calcdiv .result {
+            background: #f0f0f0;
+            border: 1px solid #a09d9d;
+            text-align: right;
+        }
+        /* .operatordiv{} */
+        .operatordiv .row{
+            display: flex;
+            flex-direction: row;
+        }
+        .operatordiv .row button{
+            width: 25%;
+            margin: 4px 4px;
+            padding: 6px 0;
+            background-color: #2196f3;
+            font-size: 18px;
+            border: 1px solid;
+            border-radius: 5px;
+        }
+        .btndiv{
+            display: flex;
+            flex-direction: row-reverse;
+        }
+        .savebtn{
+            width: 80px;
+            font-size: 14px;
+            padding: 4px 0;
+            font-weight: bold;
+            margin: 15px auto;
+            display: block;
+        }
+        .submitbtn{
+            width: 100%;
+            font-size: 20px;
+            padding: 8px 0;
+            font-weight: bold;
+            background: #3aed3a;
+            margin-right: 10px;
+            margin-top: 10px;
+            border: 1px solid #dadada;
+            border-radius: 10px;
+        }
+        button{
+            cursor: pointer;
+        }
+        .error {
+            color: red;
+            display: none;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+    </style>
+    <script>
+        // declaring variables:
+        var res = 0;
+        var no1 = 0;
+        var no2 = 0;
+        var opt = '+';
+        var change = 0;
+        var temp = "";
+
+        function setValue(val){
+            if(change == 1){
+                document.getElementById('result').value = '';
+                change = 0;
+            }
+            temp = document.getElementById('result').value;
+            temp += val;
+            document.getElementById('result').value = temp;
+        }
+        function opFunction(val){
+            if(checkValue()){
+                opt = val
+                change = 1;
+                no1 = document.getElementById('result').value;
+            }
+        }
+        // function for equal button checking operation
+        function equalFunction(){
+            if(checkValue()){
+                no2 = document.getElementById('result').value;
+                no1 = parseInt(no1);
+                no2 = parseInt(no2);
+                if(opt == '+'){
+                    res = no1+no2;
+                }
+                if(opt == '-'){
+                    res = no1-no2;
+                }
+                if(opt == '*'){
+                    res = no1*no2;
+                }
+                if(opt == '/'){
+                    res = no1/no2;
+                }
+                document.getElementById('result').value = res;
+                change = 1;
+            }
+        }
+        // clear function
+        function clearFunction(){
+            res = 0;
+            no1 = 0;
+            no2 = 0;
+            opt = '+';
+            change = 0;
+            temp = "";
+            document.getElementById('result').value = "";
+        }
+        //function to save hours
+        function saveFunction(){
+            if(checkValue()){
+                var saveValue = document.getElementById('result').value;
+                document.getElementById('hwtw').value = saveValue;
+                clearFunction();
+            }
+        }
+        // function to check if names are capitalized
+        function checkname(val){
+            var char = val.split()
+            var upperCase= new RegExp('[A-Z]');
+            if(char[0].match(upperCase)){
+                return true
+            }
+            else{
+                return false;
+            }
+        }
+        // function to check if id field is numerical value
+        function checksid(val){
+            var char = val.split()
+            var numaric= new RegExp('[0-9]');
+            if(val.match(numaric)){
+                return true
+            }
+            else{
+                return false;
+            }
+        }
+        // checking if over 25 words
+        function checkbio(val){
+            var words = val.split(" ")
+            if(words.length <= 25){
+                return true
+            }
+            else{
+                return false;
+            }
+        }
+        function submitFunction(){
+                var fname = document.getElementById('fname').value;
+                var lname = document.getElementById('lname').value;
+                var studenid = document.getElementById('studenid').value;
+                var bio = document.getElementById('bio').value;
+                var hwtw = document.getElementById('hwtw').value;
+            
+                var maindiv = document.getElementById("mainDiv");
+            
+                document.getElementById('efname').style.display = "none";
+                document.getElementById('elname').style.display = "none";
+                document.getElementById('esid').style.display = "none";
+                document.getElementById('ebio').style.display = "none";
+                document.getElementById('ehwtw').style.display = "none";
+                if(fname == ""){
+                    document.getElementById('efname').style.display = "block";
+                }
+                if(lname == ""){
+                    document.getElementById('elname').style.display = "block";
+                }
+                if(studenid == ""){
+                    document.getElementById('esid').style.display = "block";
+                }
+                if(bio == ""){
+                    document.getElementById('ebio').style.display = "block";
+                }
+                if(hwtw == ""){
+                    document.getElementById('ehwtw').style.display = "block";
+                }
+                if(fname != "" && lname != "" && studenid != "" && bio != "" && hwtw != ""){
+                    var cfname = checkname(fname);
+                    var clname = checkname(lname);
+                    var cstudenid = checksid(studenid);
+                    var cbio = checkbio(bio);
+                    if(cfname == false){
+                        document.getElementById('efname').innerHTML = "Capitalize first name.";
+                        document.getElementById('efname').style.display = "block";
+                    }
+                    if(clname == false){
+                        document.getElementById('elname').innerHTML = "Capitalize last name.";
+                        document.getElementById('elname').style.display = "block";
+                    }
+                    if(cstudenid == false){
+                        document.getElementById('esid').innerHTML = "Numeric values only!";
+                        document.getElementById('esid').style.display = "block";
+                    }
+                    if(cbio == false){
+                        document.getElementById('ebio').innerHTML = "Enter maximum 25 words.";
+                        document.getElementById('ebio').style.display = "block";
+                    }
+                    if(cfname == false || clname == false || cstudenid == false || cbio == false){
+                        maindiv.classList.add("redbg");
+                        alert("Invalid form, try again!");
+                    }
+                    else{
+                        alert("Successfully Thank you for submitting. It's a valid form.",);
+                        maindiv.classList.remove("redbg");
+                    }
+                }
+                else{
+                    alert("Please fill again. It's a invalid form");
+                    maindiv.classList.add("redbg");
+                }
+        }
+        function checkValue(){
+            var saveValue = document.getElementById('result');
+            if(saveValue.value != ""){
+                var numericOnly = /^[0-9]+$/;
+                if(saveValue.value.match(numericOnly)){
+                    return true;
+                }
+                else{
+                    document.getElementById('result').value = "ERROR: press C";
+                    change = 1;
+                    document.getElementById('hwtw').value = '';
+                    return false;
+                }
+            }
+        }        
+    </script>
+</head>
+<body>
+    <div class="maindiv" id="mainDiv" >
+        <div class="formdiv">
+            <h1>Event Driven Form</h1>
+            <form action="#" method="get">
+                <div class="fielddiv">
+                    <label>First Name</label>
+                    <input type="text" id="fname">
+                    <span class="error" id="efname" >Please Enter First Name</span>
+                </div>
+                <div class="fielddiv">
+                    <label>Last Name</label>
+                    <input type="text" id="lname">
+                    <span class="error" id="elname" >Please Enter First Name</span>
+                </div>
+                <div class="fielddiv">
+                    <label>Student ID Number</label>
+                    <input type="text" id="studenid">
+                    <span class="error" id="esid" >Please Enter First Name</span>
+                </div>
+                <div class="fielddiv">
+                    <label>Biography</label>
+                    <textarea cols="30" rows="6" id="bio" ></textarea>
+                    <span class="error" id="ebio" >Please Enter First Name</span>
+                </div>
+                <div class="calcdiv">
+                    <h4>Calculator</h4>
+                    <div class="fielddiv">
+                        <input type="text" class="result" id="result" >
+                    </div>
+                    <div class="operatordiv">
+                        <div class="row">
+                            <button type="button" onclick="setValue(7)" >7</button>
+                            <button type="button" onclick="setValue(8)" >8</button>
+                            <button type="button" onclick="setValue(9)" >9</button>
+                            <button type="button" onclick="opFunction('/')" >/</button>
+                        </div>
+                        <div class="row">
+                            <button type="button" onclick="setValue(4)" >4</button>
+                            <button type="button" onclick="setValue(5)" >5</button>
+                            <button type="button" onclick="setValue(6)" >6</button>
+                            <button type="button" onclick="opFunction('*')" >*</button>
+                        </div>
+                        <div class="row">
+                            <button type="button" onclick="setValue(1)" >1</button>
+                            <button type="button" onclick="setValue(2)" >2</button>
+                            <button type="button" onclick="setValue(3)" >3</button>
+                            <button type="button" onclick="opFunction('-')" >-</button>
+                        </div>
+                        <div class="row">
+                            <button type="button" onclick="clearFunction('C')" >C</button>
+                            <button type="button" onclick="setValue(0)" >0</button>
+                            <button type="button" onclick="equalFunction()" >=</button>
+                            <button type="button" onclick="opFunction('+')" >+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="btndiv">
+                    <button type="button" class="savebtn" onclick="saveFunction()" >Save</button>
+                </div>
+                <div class="fielddiv">
+                    <label>Hours Worked This Week</label>
+                    <input type="text" id="hwtw" readonly >
+                    <span class="error" id="ehwtw" >Please Enter First Name</span>
+                </div>
+                <button type="button" class="submitbtn" onclick="submitFunction()" >Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
